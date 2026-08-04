@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      target: dev
+    volumes:
+      - ./:/var/www
+
+  nginx:
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+
+  mysql:
+    ports:
+      - "3306:3306"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  worker-default:
+    build:
+      target: dev
+    volumes:
+      - ./:/var/www
+
+  worker-generate-items:
+    build:
+      target: dev
+    volumes:
+      - ./:/var/www
+
+  jwks:
+    image: node:alpine
+    working_dir: /app
+    volumes:
+      - ../postman-kit:/app
+    command: node serve-jwks.js
+    ports:
+      - "8082:8082"

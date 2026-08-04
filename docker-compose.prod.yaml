@@ -1,0 +1,35 @@
+services:
+  app:
+    build:
+      target: prod
+    env_file:
+      - .env
+    volumes:
+      - app_code:/var/www
+      - storage_data:/var/www/storage
+
+  nginx:
+    volumes:
+      - app_code:/var/www:ro
+
+  worker-default:
+    build:
+      target: prod
+    env_file:
+      - .env
+    volumes:
+      - app_code:/var/www
+      - storage_data:/var/www/storage
+
+  worker-generate-items:
+    build:
+      target: prod
+    env_file:
+      - .env
+    volumes:
+      - app_code:/var/www
+      - storage_data:/var/www/storage
+
+volumes:
+  app_code:
+  storage_data:
