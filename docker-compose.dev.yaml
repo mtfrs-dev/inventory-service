@@ -2,10 +2,6 @@ services:
   app:
     build:
       target: dev
-    volumes:
-      - ./:/var/www
-
-  nginx:
     ports:
       - "8000:80"
     volumes:
