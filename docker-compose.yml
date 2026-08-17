@@ -5,6 +5,7 @@ services:
       args:
         PHP_VERSION: "8.4"
     image: inventory-service:latest
+    container_name: inventory-service
     restart: unless-stopped
     volumes:
       - .:/var/www/html
@@ -17,6 +18,7 @@ services:
       args:
         PHP_VERSION: "8.4"
     image: inventory-service:latest
+    container_name: inventory-service-worker-default
     restart: unless-stopped
     volumes:
       - .:/var/www/html
@@ -28,6 +30,7 @@ services:
       args:
         PHP_VERSION: "8.4"
     image: inventory-service:latest
+    container_name: inventory-service-worker-generate-items
     restart: unless-stopped
     volumes:
       - .:/var/www/html
