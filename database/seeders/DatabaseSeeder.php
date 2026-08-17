@@ -15,7 +15,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        if (! app()->environment('production')) {
+        // fakerphp/faker (used by User::factory()) is a require-dev package.
+        // deploy.sh always runs `composer install --no-dev` on VM02, so it's
+        // never present there regardless of what APP_ENV is set to — gate on
+        // 'local', not on excluding 'production', so this stays correct no
+        // matter how the server's .env is labeled.
+        if (app()->environment('local')) {
             User::factory()
                 ->count(10)
                 ->create();
