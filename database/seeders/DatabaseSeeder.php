@@ -15,16 +15,18 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::factory()
-            ->count(10)
-            ->create();
-    
+        if (! app()->environment('production')) {
+            User::factory()
+                ->count(10)
+                ->create();
+        }
+
         $this->call(StatusSeeder::class);
 
         // $projects = Project::factory()
         //     ->count(5)
         //     ->create();
-        
+
         // foreach ($projects as $project) {
         //     $categories = Category::factory()
         //         ->count(rand(2,5))
@@ -61,7 +63,7 @@ class DatabaseSeeder extends Seeder
         //         $items->each(fn (Item $item) => $action->handle($item));
         //     }
         // }
-    
+
         // $this->call(ItemStatusSeeder::class);
     }
 }
