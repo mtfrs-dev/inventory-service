@@ -1,31 +1,7 @@
 services:
   app:
-    build:
-      target: dev
     ports:
       - "8000:80"
-    volumes:
-      - ./:/var/www
-
-  mysql:
-    ports:
-      - "3306:3306"
-
-  redis:
-    ports:
-      - "6379:6379"
-
-  worker-default:
-    build:
-      target: dev
-    volumes:
-      - ./:/var/www
-
-  worker-generate-items:
-    build:
-      target: dev
-    volumes:
-      - ./:/var/www
 
   jwks:
     image: node:alpine

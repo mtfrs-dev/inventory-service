@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 #
-# Deploys the current server checkout using docker-compose.prod.yaml
-# (self-contained, no base file needed). Run this ON the server, inside
-# the project directory.
+# Redeploys this app on VM02 following the per-port runbook's Fase 2 order:
+# build -> up -> composer install -> chown 33:33 -> migrate -> re-cache.
+# Run this ON the server, inside the cloned project directory
+# (/opt/stack/apps/inventaris).
+#
+# Note: this only covers redeploys of an already-provisioned app. Initial
+# setup (Fase 1: copying the container template, editing .env, Fase 3: adding
+# the ports: block, Fase 4: ufw allow from .188) is a one-time manual step —
+# see the runbook.
 #
 # Usage: ./deploy.sh [branch]
 #   branch  Git branch to deploy (default: main)
@@ -10,7 +16,7 @@
 set -euo pipefail
 
 BRANCH="${1:-main}"
-COMPOSE_FILES=(-f docker-compose.prod.yaml)
+SERVICE="app"
 
 log() { echo -e "\n==> $*"; }
 
@@ -40,24 +46,30 @@ fi
 git checkout "${BRANCH}"
 git reset --hard "origin/${BRANCH}"
 
-log "Building images"
-docker compose "${COMPOSE_FILES[@]}" build
+log "Building image"
+docker compose build
 
 log "Recreating containers"
-docker compose "${COMPOSE_FILES[@]}" up -d --remove-orphans
+docker compose up -d --remove-orphans
 
-log "Waiting for app container to be ready"
-until docker compose "${COMPOSE_FILES[@]}" exec -T app php artisan --version >/dev/null 2>&1; do
+log "Waiting for ${SERVICE} to be ready"
+until docker compose exec -T "${SERVICE}" php -v >/dev/null 2>&1; do
     sleep 2
 done
 
-log "Running database migrations"
-docker compose "${COMPOSE_FILES[@]}" exec -T app php artisan migrate --force
+log "Installing dependencies"
+docker compose exec -T "${SERVICE}" composer install --no-dev --optimize-autoloader
 
-log "Clearing/re-caching config (in case .env changed)"
-docker compose "${COMPOSE_FILES[@]}" exec -T app php artisan config:cache
-docker compose "${COMPOSE_FILES[@]}" exec -T app php artisan route:cache
-docker compose "${COMPOSE_FILES[@]}" exec -T app php artisan view:cache
+log "Fixing storage/bootstrap ownership (UID 33 = www-data on Debian)"
+docker compose exec -T "${SERVICE}" sh -lc 'chown -R 33:33 storage bootstrap/cache'
+
+log "Running database migrations"
+docker compose exec -T "${SERVICE}" php artisan migrate --force
+
+log "Re-caching config/routes/views"
+docker compose exec -T "${SERVICE}" php artisan config:cache
+docker compose exec -T "${SERVICE}" php artisan route:cache
+docker compose exec -T "${SERVICE}" php artisan view:cache
 
 log "Pruning dangling images"
 docker image prune -f >/dev/null
