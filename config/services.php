@@ -37,7 +37,15 @@ return [
 
     'project_management' => [
         'base_url' => env('PROJECT_MANAGEMENT_BASE_URL'),
-        'token'    => env('PROJECT_MANAGEMENT_TOKEN'),
+        'token' => env('PROJECT_MANAGEMENT_TOKEN'),
+    ],
+
+    'workspace' => [
+        'base_url' => env('WORKSPACE_SERVICE_BASE_URL'),
+        'webhook_path' => env('WORKSPACE_SERVICE_WEBHOOK_PATH', '/webhooks/inventory/items-generated'),
+        'service_id' => env('WORKSPACE_SERVICE_CLIENT_ID', 'inventory-service'),
+        'secret' => env('WORKSPACE_SERVICE_SECRET'),
+        'timeout' => (int) env('WORKSPACE_SERVICE_TIMEOUT', 5),
     ],
 
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Item;
 
+use App\Events\ItemsGenerated;
 use App\Models\Subcategory;
 
 class GenerateItemsBySubcategoryAction extends GenerateItemsAction
@@ -21,7 +22,7 @@ class GenerateItemsBySubcategoryAction extends GenerateItemsAction
         $this->capacityValidator->forSubcategory($subcategory, $itemsCount);
 
         $category = $subcategory->category;
-        $prefix   = "{$category->project->code}-{$category->project->year}_{$this->initials($category->name)}";
+        $prefix = "{$category->project->code}-{$category->project->year}_{$this->initials($category->name)}";
 
         $this->processSubcategory(
             $category->project->id,
@@ -31,5 +32,7 @@ class GenerateItemsBySubcategoryAction extends GenerateItemsAction
             $status->id,
             $itemsCount,
         );
+
+        ItemsGenerated::dispatch('subcategory', $subcategory, $category->project, $itemsCount);
     }
 }

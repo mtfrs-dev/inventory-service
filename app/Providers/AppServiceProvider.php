@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Contracts\ExternalProjectServiceInterface;
+use App\Contracts\WorkspaceNotifierInterface;
 use App\Services\ExternalProject\HttpExternalProjectService;
+use App\Services\Workspace\HttpWorkspaceNotifier;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -21,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ExternalProjectServiceInterface::class, HttpExternalProjectService::class);
+        $this->app->bind(WorkspaceNotifierInterface::class, HttpWorkspaceNotifier::class);
     }
 
     /**
@@ -53,8 +56,9 @@ class AppServiceProvider extends ServiceProvider
             : null,
         );
     }
+
     /**
-     * Rate Limiting 
+     * Rate Limiting
      */
     protected function configureRateLimiting(): void
     {

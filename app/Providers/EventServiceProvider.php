@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Events\ItemsGenerated;
 use App\Events\ProjectDeleted;
 use App\Events\ProjectSynced;
 use App\Events\TokenRevoked;
@@ -12,6 +13,7 @@ use App\Listeners\LogProjectSynced;
 use App\Listeners\LogTokenRevoked;
 use App\Listeners\LogUserProvisioned;
 use App\Listeners\LogUserSynchronized;
+use App\Listeners\NotifyWorkspaceItemsGenerated;
 use Illuminate\Database\Events\DatabaseRefreshed;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
@@ -27,6 +29,8 @@ class EventServiceProvider extends ServiceProvider
 
         Event::listen(ProjectSynced::class, LogProjectSynced::class);
         Event::listen(ProjectDeleted::class, LogProjectDeleted::class);
+
+        Event::listen(ItemsGenerated::class, NotifyWorkspaceItemsGenerated::class);
 
         Event::listen(DatabaseRefreshed::class, function () {
             Storage::disk('public')->deleteDirectory('qr-codes');

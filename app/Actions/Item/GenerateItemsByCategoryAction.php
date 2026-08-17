@@ -2,6 +2,7 @@
 
 namespace App\Actions\Item;
 
+use App\Events\ItemsGenerated;
 use App\Models\Category;
 
 class GenerateItemsByCategoryAction extends GenerateItemsAction
@@ -34,8 +35,14 @@ class GenerateItemsByCategoryAction extends GenerateItemsAction
                     $data['items_count'],
                 );
             }
+
+            $generatedCount = array_sum(array_column($subcategoryData, 'items_count'));
         } else {
             $this->processSingleCategory($category->project, $category, $status, $itemsCount);
+
+            $generatedCount = $itemsCount;
         }
+
+        ItemsGenerated::dispatch('category', $category, $category->project, $generatedCount);
     }
 }
