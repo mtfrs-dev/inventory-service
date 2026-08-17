@@ -2,18 +2,21 @@
 
 // use App\Http\Controllers\Api\AuthWebhookController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\ItemAttachmentController;
 use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\ProjectWebhookController;
-use App\Http\Controllers\Api\SubcategoryController;
-// use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\StatusController;
+use App\Http\Controllers\Api\SubcategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix'  => 'v1'], function(){
+    Route::get('/healthchecks', [HealthController::class, 'check'])->name('healthchecks');
+
     Route::apiResource('categories',    CategoryController::class);
     Route::apiResource('subcategories', SubcategoryController::class);
     Route::apiResource('statuses',      StatusController::class);
+
     
     // ROUTES FOR ITEM METHODS
     Route::controller(ItemController::class)->group(function () {
