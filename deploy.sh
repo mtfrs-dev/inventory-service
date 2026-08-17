@@ -3,7 +3,7 @@
 # Redeploys this app on VM02 following the per-port runbook's Fase 2 order:
 # build -> up -> composer install -> chown 33:33 -> migrate -> re-cache.
 # Run this ON the server, inside the cloned project directory
-# (/opt/stack/apps/inventaris).
+# (/opt/stack/apps/inventory-service).
 #
 # Note: this only covers redeploys of an already-provisioned app. Initial
 # setup (Fase 1: copying the container template, editing .env, Fase 3: adding

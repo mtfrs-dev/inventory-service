@@ -4,7 +4,7 @@ services:
       context: .
       args:
         PHP_VERSION: "8.4"
-    image: inventaris:latest
+    image: inventory-service:latest
     restart: unless-stopped
     volumes:
       - .:/var/www/html
@@ -16,7 +16,7 @@ services:
       context: .
       args:
         PHP_VERSION: "8.4"
-    image: inventaris:latest
+    image: inventory-service:latest
     restart: unless-stopped
     volumes:
       - .:/var/www/html
@@ -27,7 +27,7 @@ services:
       context: .
       args:
         PHP_VERSION: "8.4"
-    image: inventaris:latest
+    image: inventory-service:latest
     restart: unless-stopped
     volumes:
       - .:/var/www/html
