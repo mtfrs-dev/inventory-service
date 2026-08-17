@@ -28,6 +28,15 @@ fi
 
 log "Fetching latest code (${BRANCH})"
 git fetch origin "${BRANCH}"
+
+UNPUSHED="$(git rev-list "origin/${BRANCH}..HEAD" 2>/dev/null || true)"
+if [ -n "${UNPUSHED}" ]; then
+    echo "ERROR: local ${BRANCH} has commits not on origin/${BRANCH} — 'git reset --hard' would discard them." >&2
+    echo "Push them first (git push origin ${BRANCH}) before deploying. Deploy aborted." >&2
+    git log --oneline "origin/${BRANCH}..HEAD" >&2
+    exit 1
+fi
+
 git checkout "${BRANCH}"
 git reset --hard "origin/${BRANCH}"
 
